@@ -7,13 +7,19 @@ import os
 
 clear = lambda: os.system('cls')
 
-class Game:
+class Game():
     def __init__(self):
         # Player markers
-        self.player1 = Player().player
-        self.player2 = Player().player
+        self.player1 = Player(1).player
+        self.player2 = Player(2).player
         # Game board
-        self.board = Board().board
+        self.Board = Board()
+        self.game_board = self.Board.board
+        self.buttons = self.Board.buttons
+        self.Board.reset_button.configure(command=self.reset_game)
+        # Game display
+        self.display_text = Board.text
+
 
 
     def replay(self):
@@ -57,7 +63,13 @@ class Game:
         while position not in range(1,10) or not self.space_check(position):
             position = int(input('Choose a position(1-9): '))
         return position
-
+    
+    def reset_game(self):
+        # Clear shapes from the board and buttons
+        for i in range(3):
+            for j in range(3):
+                self.buttons[i][j].configure(text="")
+                self.board[i][j] = ""
 
     def play(self):
         print('Welcome to Tic Tac Toe!')
@@ -68,6 +80,7 @@ class Game:
             turn = 'Player 1'
             while game_on:
                 if turn == 'Player 1':
+                    self.display_text.set(f"{self.player1}'s Turn")
                     print(f'Player 1 is {self.player1}\nPlayer 2 is {self.player2}\n')
                     print("Player 1's turn.")
                     self.display_board()
@@ -92,6 +105,7 @@ class Game:
                 else:
                     print(f'Player 1 is {self.player1}\nPlayer 2 is {self.player2}\n')
                     print("Player 2's turn.")
+                    self.display_text.set(f"{self.player}'s Turn")
                     self.display_board()
                     position = self.player_choice()
                     self.update_board(self.player2, position)
